@@ -1,0 +1,93 @@
+<script>
+    class getAudioVideoDuration{
+        constructor(urls)
+        {
+            this.urls = urls;
+            this.setDurationCount = 0;
+        }
+        getExtension(filename) {
+            var parts = filename.split('.');
+            return parts[parts.length - 1];
+        }
+    
+        isVideo(filename) {
+            var ext = this.getExtension(filename);
+            switch (ext.toLowerCase()) {
+                case 'm4v':
+                case 'avi':
+                case 'mpg':
+                case 'mp4':
+                case 'mov':
+                // etc
+                return true;
+            }
+            return false;
+        }
+    
+        isAudio(filename) {
+            var ext = this.getExtension(filename); 
+            switch (ext.toLowerCase()) {
+                case 'mp3':
+                case 'wma':
+                case 'aac':
+                case 'wav':
+                // etc
+                return true;
+            }
+            return false;
+        }
+    
+        getVideoDuration(path,j,callback) {  
+            var video = document.createElement('video'); 
+            video.src = path; 
+            video.addEventListener("canplaythrough", function() { 
+                setTimeout(function() { callback(video.duration,j);},3000);  
+            }, false); 
+        }
+        getAudioDuration(path,j,callback) {   
+                var audio = document.createElement('AUDIO'); 
+                audio.src = path;  
+                audio.addEventListener("canplaythrough", function() { 
+                    setTimeout(function() { callback(audio.duration,j); },3000); 
+                }, false); 
+        }
+        getAllDuration(callback){ 
+                //for(var j = 0; j < this.urls.length; j++) {
+                for(var j = 0; j < 20; j++) {
+                    var d = 0 
+                    if(this.isVideo(this.urls[j].path)){  
+                        this.getVideoDuration(this.urls[j].path,j,this.setDuration.bind(this)); 
+                    } 
+                    if(this.isAudio(this.urls[j].path)){  
+                        this.getAudioDuration(this.urls[j].path,j,this.setDuration.bind(this)); 
+                    }  
+                }
+                //if(j >= this.urls.length)
+                if(j >= 20)
+                {   
+                    document.write('<h2>Please Wait...</h2>'); 
+                    callback();
+                } 
+        } 
+        setDuration(d,j){ 
+            console.log('setDuration');
+            this.urls[j].music_length = d;
+            this.setDurationCount++;
+            if(this.setDurationCount >= this.urls.length){
+                this.printUrls();
+            } 
+        }
+        printUrls(){
+            console.log(this.urls);
+            document.write(JSON.stringify(this.urls)); 
+        }
+    }
+    var urls =[]; 
+    urls.push({"path":"https://musoappuploads.s3.ap-southeast-2.amazonaws.com/uploads/recordedvideo20180712-174118-11-30.mp3","music_length":"0"} );
+     
+    duration = new getAudioVideoDuration(urls);
+    duration.getAllDuration(function(){
+        console.log('allDone');
+        console.log(this.urls);
+    }); 
+    </script>
