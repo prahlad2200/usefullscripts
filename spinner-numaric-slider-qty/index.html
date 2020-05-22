@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Pressing Express</title> 
+  <!-- Bootstrap Core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ 
+ 
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> 
+
+  <link rel="stylesheet" type="text/css" href="css/newstyle.css"> 
+</head>
+
+<body id="page-top"> 
+  
+  <!-- Call to Action -->
+  <section class="content-section bg-ligth text-primary" id="commande">
+    <div class="container">
+      <h2 class="mb-4  text-center">Votre commande</h2>
+      
+      <!-- Number Spinner -->
+       <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------  Here my friend --------------------------------------------------------------------------------------------------------------------------------------------->
+      <div class="form_section"> 
+        <form class="form" method="POST" id="order_form_step1" onclick="return validate_order_form_step1()">
+    
+            <div class="col-container"> 
+                <div class="col-1-2">
+                    <div class="form-marg-mix">
+                        <label for="email">Votre email</label>
+                        <input type="email" placeholder="Votre email" name="email" id="email">
+                    </div>
+                </div> 
+                <div class="col-1-2">
+                    <div class="form-marg-mix">
+                        <label for="name">Votre nom</label>
+                        <input type="text" placeholder="Votre nom" name="name" id="name">
+                    </div>
+                </div> 
+                <div class="clear"></div> 
+                <div class="col-1-2">
+                    <div class="form-marg-mix">
+                        <label for="postal_code">Code postal</label>
+                        <input type="text" placeholder="Code postal" id="postal_code" name="postal_code">	
+                    </div>
+                </div>
+                <div class="clear"></div> 
+                <div class="col-1-2">
+                    <div class="form-marg-mix">
+                        <label for="city">Ville</label>
+                        <input type="text" placeholder="Ville" id="city" name="city">	
+                    </div>
+                </div> 
+                <div class="clear"></div>
+                <div class="col-full text-center marg-top-15">
+                    <div class="form-marg-mix"> 
+                        <div class="ordere_submit">
+                          <div class="total_row">
+                            <!-- <span class="total_label">Prix totla</span> &nbsp; <span class="total_label_small">(TVA incluse)</span>
+                            <span class="total_amount">136.50 €</span> 
+                          </div>
+                          <p> Nous vous rappelons que le comptage final de votre linge s'effectuera dans notre pressing. Le prix total peut varier en conséquence. Minimum de la commande 15 € </p> -->
+                          <button type="submit">open numaric slider</button> 
+                      </div> 
+                    </div>
+                </div> 
+                <div class="clear"></div>
+            </div>
+        </form>
+      </div> 
+      
+    </div>
+  </section>
+ 
+
+  <!-- order popup  --> 
+  <div class="modal" id="order_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog  modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Votre Commande</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="row">
+              <div class="col-md-12"> 
+                  <div class="order_details">
+                      <div class="order_item"> 
+                        <div class="row"> 
+                              <div class="col-md-4 item_name">Costume</div>
+                              <div class="col-md-5 item_qty"> 
+
+                                <div class="cursor" style="left: 225px; top: 94px; opacity: 0; transform: matrix(1, 0, 0, 1, 0, 0);"></div>
+                                <div  class="number_spinner_bound">
+                                  <div class="number_spinner"> 
+                                      <span class="controller number_spinner_prev"></span>
+                                      <span class="controller number_spinner_next"></span>
+                                      <div class="superellipse stepper" style="transform: translate3d(0px, 0px, 0px); cursor: move; touch-action: pan-y; user-select: none; z-index: 1001;">
+                                        <div class="container-wrapper">
+                                            <ul class="number_spinner_container" style="left: 0px;">
+                                                <li class="item">0</li> 
+                                            </ul>
+                                        </div>
+                                      </div> 
+                                  </div>
+                                </div>
+                                <div class="item_qty_seprator"></div>
+                              </div>
+                              <div class="col-md-3 item_price">9.50 €</div>
+                          </div>
+                      </div>
+
+                      <div class="order_item">  
+                          <div class="row">
+                            <div class="col-md-4 item_name">Veste de costume</div>
+                            <div class="col-md-5 item_qty"> 
+                              <div class="cursor" style="left: 225px; top: 94px; opacity: 0; transform: matrix(1, 0, 0, 1, 0, 0);"></div>
+                              <div  class="number_spinner_bound">
+                                <div class="number_spinner"> 
+                                    <span class="controller number_spinner_prev"></span>
+                                    <span class="controller number_spinner_next"></span>
+                                    <div class="superellipse stepper" style="transform: translate3d(0px, 0px, 0px); cursor: move; touch-action: pan-y; user-select: none; z-index: 1001;">
+                                      <div class="container-wrapper">
+                                          <ul class="number_spinner_container" style="left: 0px;">
+                                              <li class="item">0</li>
+                                          </ul>
+                                      </div>
+                                    </div> 
+                                </div>
+                              </div>
+                              <div class="item_qty_seprator"></div>
+                            </div>
+                            <div class="col-md-3 item_price">6 €</div>
+                          </div>
+                      </div>
+
+                      <div class="order_item">  
+                          <div class="row">
+                            <div class="col-md-4 item_name">Chemise</div>
+                            <div class="col-md-5">  
+                                <div class="ordere_submit">
+                                    <div class="total_row">
+                                      <span class="total_label">Prix totla</span> &nbsp; <span class="total_label_small">(TVA incluse)</span>
+                                      <span class="total_amount">136.50 €</span> 
+                                    </div>
+                                    <p> Nous vous rappelons que le comptage final de votre linge s'effectuera dans notre pressing. Le prix total peut varier en conséquence. Minimum de la commande 15 € </p>
+                                    <button class="order_form_action2" type="submit">Commander maintenant</button> 
+                                </div>
+                            </div>
+                            <div class="col-md-3 item_price">4 €</div>
+                          </div> 
+                      </div>  
+                  </div> 
+              </div>
+            </div>
+          </div> 
+      </div>
+    </div>
+  </div>
+  
+  <!-- End Popup Section--> 
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+ 
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/utils/Draggable.min.js"></script>
+  <script src="js/spinner.js"></script>
+  <script>
+    function validate_order_form_step1(){
+
+      var form = $("#order_form_step1");
+      var validate=true;
+      if(validate)
+      {  
+        $('#order_modal').modal('show');
+        var runSpinner = new Spinner(); 
+        // get data from spinner  
+        $("#order_modal .order_form_action2").click(function() { 
+          $('#order_modal').modal('hide');
+          $("#order_form_step1").submit();
+          return true;
+        }.bind(this)); 
+        return false;
+      }
+      else{
+        return false;
+      }
+    }
+
+  </script>
+</body>
+
+</html>

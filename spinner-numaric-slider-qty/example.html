@@ -1,0 +1,437 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<link rel="apple-touch-icon" type="image/png" href="https://static.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png">
+<meta name="apple-mobile-web-app-title" content="CodePen">
+<link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico">
+<link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111">
+<title>CodePen - Stepper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css?family=Palanquin+Dark');
+
+
+body {
+  font-family: 'Palanquin Dark', sans-serif;
+  background:var(--body-color);
+}
+
+html {
+  --box-width: 100px;
+  --box-height: 100px;
+  --box-color: #ff4651;
+  --box-color1: #fb3156;
+  --box-color2: #fd735a;
+  --body-color: #fff;
+  --arrows-color: #ccc;
+  --box-color-shadow: rgba(255,70,81,0.3);
+  --num: 100;
+}
+
+
+
+#stepper {
+  width:var(--box-width);
+  height:var(--box-height);
+  margin:0 auto;
+  position:relative;
+  box-shadow: 0 30px 30px -10px var(--box-color-shadow);
+
+}
+
+#container-wrapper {
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  display:block;
+  position:relative;
+  transform: scale(1.05);
+}
+
+.disabled {
+   box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2), 0 30px 30px -10px var(--box-color-shadow) !important;
+}
+
+.disabled:after, .disabled:before  {
+  box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+}
+
+
+#bound {
+  position:absolute;
+  left:0;
+  top:0;
+  right:0;
+  bottom:0;
+  margin:auto;
+  width:calc(var(--box-width) * 2);
+  height:var(--box-height);
+  z-index:1;
+  
+}
+
+.item {
+  float:left;
+  width:var(--box-width);
+  height:var(--box-height);
+  display:block;
+  text-align:center;
+  color:#fff;
+  font-size:50px;
+  line-height:83px;
+}
+
+ul {
+  padding:0;
+  margin:0;
+  width:calc(var(--box-width) * var(--num));
+  position:absolute;
+  left:0;
+  top:0;
+}
+
+.controller {
+    width:calc(var(--box-width) / 2);
+  height:var(--box-height);
+  position:absolute;
+
+}
+
+.controller:active {
+  transform:scale(0.9)
+}
+
+#next {
+  right:0;
+}
+
+#prev {
+  left:0;
+}
+
+#next:before, #next:after, #prev:before, #prev:after {
+  content:"";
+  position:absolute;
+  width:30px;
+  height:6px;
+  border-radius:6px;
+  background-color:var(--arrows-color);
+}
+
+#next:before, #prev:before {
+  top:55px;
+}
+
+#next:after, #prev:after {
+  top:38px;
+}
+
+#prev:before {
+  transform: rotate(45deg);
+}
+
+#prev:after {
+  transform: rotate(-45deg);
+}
+
+
+#next:before {
+  transform: rotate(135deg);
+}
+
+#next:after {
+  transform: rotate(225deg);
+}
+
+#next:after, #next:before {
+ right:0;
+}
+
+#container {
+  transition: all 0.5 ease;
+}
+
+.superellipse {
+    border-radius: 23px;
+    background-image: linear-gradient(to top, var(--box-color1), var(--box-color2));
+}
+
+.superellipse:before,
+    .superellipse:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+       width:var(--box-width);
+      height:var(--box-height);
+      background: inherit;
+      border-radius: 100%;
+      -webkit-transform: scaleX(2) scaleY(1.05);
+      transform: scaleX(2) scaleY(1.05);
+      clip: rect(0, 66px, 100px, 34px);
+      z-index: -1;
+    }
+
+    .superellipse:after {
+      -webkit-transform: scaleY(2) scaleX(1.05) rotate(90deg);
+      transform: scaleY(2) scaleX(1.05) rotate(90deg);
+      background-image: linear-gradient(to left, var(--box-color1) 25%, var(--box-color2) 75%);
+    }
+
+.cursor {
+  background-color:rgba(255,255,255,0.1);
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  box-shadow:inset 0px 0px 25px rgba(255,255,255,0.7);
+  position:absolute;
+  z-index:200;
+  pointer-events:none;
+  opacity:0;
+}
+</style>
+<script>
+  window.console = window.console || function(t) {};
+</script>
+<script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+</head>
+<body translate="no">
+<div class="cursor" style="left: 225px; top: 94px; opacity: 0; transform: matrix(1, 0, 0, 1, 0, 0);"></div>
+<div id="bound"><span class="controller" id="prev"></span><span class="controller" id="next"></span>
+<div class="superellipse" id="stepper" style="transform: translate3d(0px, 0px, 0px); cursor: move; touch-action: pan-y; user-select: none; z-index: 1017;">
+<div id="container-wrapper">
+<ul id="container" style="left: 0px; transform: matrix(1, 0, 0, 1, -2400, 0);"><li class="item">0</li><li class="item">1</li><li class="item">2</li><li class="item">3</li><li class="item">4</li><li class="item">5</li><li class="item">6</li><li class="item">7</li><li class="item">8</li><li class="item">9</li><li class="item">10</li><li class="item">11</li><li class="item">12</li><li class="item">13</li><li class="item">14</li><li class="item">15</li><li class="item">16</li><li class="item">17</li><li class="item">18</li><li class="item">19</li><li class="item">20</li><li class="item">21</li><li class="item">22</li><li class="item">23</li><li class="item">24</li><li class="item">25</li><li class="item">26</li><li class="item">27</li><li class="item">28</li><li class="item">29</li><li class="item">30</li></ul>
+</div>
+</div>
+</div>
+<script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/utils/Draggable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.js"></script>
+<script id="rendered-js">
+// Reference: https://dribbble.com/shots/5639404-Stepper-XVIII  by Oleg Frolov
+
+console.clear();
+
+// SETUP
+var overlapThreshold = "50%";
+var boxwidth = $("#stepper").css("width").replace(/[^-\d\.]/g, '');
+var maxValue = 30;
+var minValue = 0;
+var ContLenght = maxValue + boxwidth;
+var startValue = 0;
+var mainTimer;
+var InitialTimer = 1000; //ms
+var NewTimer = InitialTimer;
+var minTimerValue = 50; //ms
+var increment = 1.25;
+var myval = startValue;
+
+var initiate = function () {
+  for (var i = minValue; i <= maxValue; i++) {if (window.CP.shouldStopExecution(0)) break;
+    $("#container").append("<li class='item'>" + i + "</li>");
+  }window.CP.exitedLoop(0);
+  TweenMax.to("#container", 0, { left: -(boxwidth * startValue) });
+};
+
+initiate();
+
+// TIMELINE
+var anim = new TimelineMax();
+
+var moveForwards = function () {
+  anim.add(TweenMax.to("#container", 0.5, { x: "-=" + boxwidth, ease: Expo.easeOut }));
+};
+
+var moveBackwards = function () {
+  anim.add(TweenMax.to("#container", 0.5, { x: "+=" + boxwidth, ease: Expo.easeOut }));
+};
+
+// GENERAL functions
+var increaseValue = function () {
+  increaseInputValue();
+  anim.progress(1, false);
+  moveForwards();
+  anim.resume();
+};
+
+var decreaseValue = function () {
+  decreaseInputValue();
+  anim.progress(1, false);
+  moveBackwards();
+  anim.resume();
+};
+
+var increaseInputValue = function () {
+  if (myval < maxValue) {
+    myval++;
+    console.log(myval);
+  }
+};
+
+var decreaseInputValue = function () {
+  if (myval > minValue) {
+    myval--;
+    console.log(myval);
+  }
+};
+
+
+// Draggable item
+var stepper = Draggable.create("#stepper", {
+  type: "x",
+  edgeResistance: 0.95,
+  bounds: "#bound" })[
+0];
+
+// declare events
+stepper.addEventListener("dragend", onEndDragging);
+stepper.addEventListener("drag", clickAndHold);
+
+// On Mouseup when dragging
+function onEndDragging() {
+
+  TweenMax.to("#stepper", 1, { x: "0", ease: Elastic.easeOut.config(1, 0.75) }); // brings it back in position
+  changeValueOnDraggingRelease();
+  resetTimer();
+  $("#stepper").removeClass("disabled");
+}
+
+var changeValueOnDraggingRelease = function () {
+  anim.progress(1, false);
+  if (stepper.hitTest("#next", overlapThreshold) && myval < maxValue) {
+    increaseValue();
+  } else
+
+  if (stepper.hitTest("#prev", overlapThreshold) && myval > minValue) {
+    decreaseValue();
+  }
+  anim.resume();
+
+};
+
+//On drag and hold 
+function clickAndHold() {
+  checkanddisable();
+};
+
+
+//On click and hold on the Stepper
+$("#stepper").on("touchstart mousedown", function () {
+  moveOnHold();
+});
+
+$("#stepper").on("touchend mouseup", function () {
+  resetTimer();
+});
+
+var decreaseTimer = function () {
+  if (NewTimer > minTimerValue) {
+    NewTimer = NewTimer / increment;
+    console.log("timer: " + NewTimer);
+  } else
+  {
+    NewTimer = minTimerValue;
+    console.log("timer: " + NewTimer);
+  }
+};
+
+function ChangeNumberOnHold() {
+  if (stepper.hitTest("#next", overlapThreshold) && myval < maxValue) {
+    $("#stepper").removeClass("disabled");
+    increaseValue();
+    decreaseTimer();
+  } else
+
+  if (stepper.hitTest("#prev", overlapThreshold) && myval > minValue) {
+    $("#stepper").removeClass("disabled");
+    decreaseValue();
+    decreaseTimer();
+  } else
+  {
+    NewTimer = InitialTimer;
+  }
+}
+
+var moveOnHold = function () {
+  mainTimer = setTimeout(function () {
+    ChangeNumberOnHold();
+    moveOnHold();
+  }, NewTimer);
+};
+
+//Reset Timer
+var resetTimer = function () {
+  clearTimeout(mainTimer);
+  NewTimer = InitialTimer;
+};
+
+
+//visually disable movement on Max and Min Values
+var checkanddisable = function () {
+  if (stepper.hitTest("#next", overlapThreshold) && myval >= maxValue) {
+    $("#stepper").addClass("disabled");
+  } else
+  if (stepper.hitTest("#prev", overlapThreshold) && myval <= minValue) {
+    $("#stepper").addClass("disabled");
+  }
+};
+
+
+var disabled = function () {
+  $("#stepper").addClass("disabled");
+  setTimeout(function () {$("#stepper").removeClass("disabled");}, 100);
+};
+
+// click on arrows
+
+$("#next").click(function () {
+  var tlforward = new TimelineLite();
+  tlforward.to("#stepper", 0.1, { x: 10, ease: Expo.easeOut }, "-=0");
+  tlforward.to("#stepper", 0.5, { x: 0, ease: Back.easeOut.config(1.7) }, "-=0");
+  if (myval < maxValue) {
+    increaseValue();
+  } else
+  {
+    disabled();
+  }
+});
+
+$("#prev").click(function () {
+  var tlforward = new TimelineLite();
+  tlforward.to("#stepper", 0.1, { x: -10, ease: Expo.easeOut }, "-=0");
+  tlforward.to("#stepper", 0.5, { x: 0, ease: Back.easeOut.config(1.7) }, "-=0");
+  if (myval > minValue) {
+    decreaseValue();
+  } else
+  {
+    disabled();
+  }
+});
+
+//Cursor Events --- only on desktop
+
+$("#stepper").mousemove(function (e) {
+  $(".cursor").css({ left: e.pageX - 40, top: e.pageY - 40 });
+});
+
+$("#stepper").mousedown(function (e) {
+  TweenMax.to(".cursor", 0.2, { opacity: 1, scale: 0.8, ease: Power2.easeOut });
+});
+
+$(document).mouseup(function (e) {
+  var clicked = new TimelineMax();
+  clicked.to(".cursor", 0.5, { scale: 3, ease: Power2.easeOut }, "+=0"),
+  clicked.to(".cursor", 0.2, { opacity: 0, ease: Power2.easeOut }, "-=0.2"),
+  clicked.to(".cursor", 0, { scale: 1, ease: Power2.easeOut }, "-=0");
+});
+//# sourceURL=pen.js
+    </script>
+<script src="https://static.codepen.io/assets/editor/iframe/iframeRefreshCSS-e03f509ba0a671350b4b363ff105b2eb009850f34a2b4deaadaa63ed5d970b37.js"></script>
+
+
+</body></html>
